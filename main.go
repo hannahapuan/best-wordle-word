@@ -57,18 +57,5 @@ func sortWordScores(wordScores map[string]int) ref.PriorityQueue {
 // 			maxWord = word
 // 		}
 // 	}
-// 	fmt.Println(maxWord, max)
 // 	return maxWord
-// }
-
-// func printPretty(cardMap map[string]map[int]int) {
-// 	for letter, pos := range cardMap {
-// 		fmt.Println(letter, printPrettyInts(pos))
-// 	}
-// }
-
-// func printPrettyInts(intsMap map[int]int) {
-// 	for letter, pos := range cardMap {
-// 		fmt.Println(letter, pos)
-// 	}
 // }
