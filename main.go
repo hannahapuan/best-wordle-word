@@ -2,6 +2,7 @@ package main
 
 import (
 	"container/heap"
+	"fmt"
 
 	"github.com/hannahapuan/best-wordle-word/ref"
 )
@@ -28,6 +29,9 @@ func main() {
 
 	// sort into a priority queue where score is the priority
 	ws := sortWordScores(wordScores)
+
+	fmt.Println("Word\tScore")
+	fmt.Println("----\t-----")
 	ws.Print()
 }
 

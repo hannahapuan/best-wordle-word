@@ -9,7 +9,7 @@ import (
 func (pq *PriorityQueue) Print() {
 	for pq.Len() > 0 {
 		item := heap.Pop(pq).(*Item)
-		fmt.Printf("%.2d: %s\n", item.Priority, item.Value)
+		fmt.Printf("%s\t%.2d\n", item.Value, item.Priority)
 	}
 	fmt.Println()
 }

@@ -1,3 +1,5 @@
+Score	Word
+----    -----
 9972: saree
 9704: soree
 9251: sooey
