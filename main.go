@@ -13,9 +13,12 @@ func main() {
 	// create cardinality map of each occurrence of a letter in each position
 	cardMap := initalizeCardMap(ref.WordleList)
 
-	// create map of each letter's total cardinality and fill it with each word's score
+	// create map of each letter's total cardinality utilizing the cardinality map
 	wordScores := make(map[string]int)
 	for _, word := range ref.WordleList {
+		if !checkValid(word) {
+			continue
+		}
 		wordScores[word] = determineWordScore(word, cardMap)
 	}
 
@@ -24,7 +27,23 @@ func main() {
 	ws.Print()
 }
 
+// checkValid uses the ruleset set in ref/rules.go to determine if a word is valid
+// suffix rules contains strings that the word cannot end with, currently "s" and "ed"
+func checkValid(word string) bool {
+	// check if word is valid
+	for _, rule := range ref.SuffixRules {
+		if word[len(word)-len(rule):] == rule {
+			return false
+		}
+	}
+	return true
+}
+
 // initalizeCardMap creates a map of each letter's cardinality in each position
+// e.g.
+//
+//	a: {0: 1, 1: 1, 2: 1, 3: 1, 4: 1}
+//	b: {0: 0, 1: 0, 2: 0, 3: 0, 4: 0}
 func initalizeCardMap(wordList []string) map[string]map[int]int {
 	cardMap := make(map[string]map[int]int)
 	for _, word := range wordList {
