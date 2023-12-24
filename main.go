@@ -6,20 +6,24 @@ import (
 	"github.com/hannahapuan/best-wordle-word/ref"
 )
 
-// best wordle word finds the best wordle word by comparing
-// the cardinality of each letter in each position in the wordle dictionary list
+// best wordle word finds the best wordle word by comparing:
+// 1) the cardinality of each letter in each position in the wordle dictionary list
+// 2) the overall possibility of a letter being in any solution
 
 func main() {
 	// create cardinality map of each occurrence of a letter in each position
-	cardMap := initalizeCardMap(ref.WordleList)
+	cardLetterMap := initializeCardMapByPosition(ref.WordleList)
 
-	// create map of each letter's total cardinality utilizing the cardinality map
+	// create map of each letter's total cardinality
+	cardWordMap := initializeCardMapByWord(ref.WordleList)
+
+	// create map of each letter's total cardinality utilizing the cardinality maps by position and in all positions
 	wordScores := make(map[string]int)
 	for _, word := range ref.WordleList {
 		if !checkValid(word) {
 			continue
 		}
-		wordScores[word] = determineWordScore(word, cardMap)
+		wordScores[word] = determineWordScore(word, cardLetterMap, cardWordMap)
 	}
 
 	// sort into a priority queue where score is the priority
@@ -39,32 +43,50 @@ func checkValid(word string) bool {
 	return true
 }
 
-// initalizeCardMap creates a map of each letter's cardinality in each position
+// initializeCardMap creates a map of each letter's cardinality in each position
 // e.g.
 //
 //	a: {0: 1, 1: 1, 2: 1, 3: 1, 4: 1}
 //	b: {0: 0, 1: 0, 2: 0, 3: 0, 4: 0}
-func initalizeCardMap(wordList []string) map[string]map[int]int {
-	cardMap := make(map[string]map[int]int)
+func initializeCardMapByPosition(wordList []string) map[string]map[int]int {
+	cardLetterMap := make(map[string]map[int]int)
 	for _, word := range wordList {
 		for i, letter := range word {
 			l := string(letter)
-			if _, ok := cardMap[l]; !ok {
-				cardMap[l] = make(map[int]int)
+			if _, ok := cardLetterMap[l]; !ok {
+				cardLetterMap[l] = make(map[int]int)
 			}
-			cardMap[l][i] = cardMap[l][i] + 1
+			cardLetterMap[l][i] = cardLetterMap[l][i] + 1
 		}
 	}
 
-	return cardMap
+	return cardLetterMap
 }
 
-// determineWordScore determines the score by adding the cardinality of each letter in each position
-func determineWordScore(word string, cardMap map[string]map[int]int) int {
+// initializeCardMap creates a map of each letter's cardinality in all words
+// e.g.
+//
+//	a: 245, b: 123, c: 12
+func initializeCardMapByWord(wordList []string) map[string]int {
+	cardWordMap := make(map[string]int)
+	for _, word := range wordList {
+		for _, letter := range word {
+			l := string(letter)
+			cardWordMap[l] += 1
+		}
+	}
+
+	return cardWordMap
+}
+
+// determineWordScore determines the score by
+// 1) adding the cardinality of each letter in each position
+// 2) adding the cardinality of each letter in all words
+func determineWordScore(word string, cardLetterMap map[string]map[int]int, cardWordMap map[string]int) int {
 	var score int
 	for j, letter := range word {
 		l := string(letter)
-		score += cardMap[l][j]
+		score += cardLetterMap[l][j] + cardWordMap[l]
 	}
 
 	return score
